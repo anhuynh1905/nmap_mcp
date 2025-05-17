@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nmap Scanner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Nmap Scanner</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="/history">History</a>
+                <a class="nav-link" href="/stats">Statistics</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Start New Scan</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="scanForm">
+                            <div class="mb-3">
+                                <label for="target" class="form-label">Target</label>
+                                <input type="text" class="form-control" id="target" name="target" 
+                                       placeholder="Enter IP address or hostname" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="scan_type" class="form-label">Scan Type</label>
+                                <select class="form-select" id="scan_type" name="scan_type" required>
+                                    <option value="basic">Basic Scan</option>
+                                    <option value="aggressive">Aggressive Scan</option>
+                                    <option value="stealth">Stealth Scan</option>
+                                    <option value="vuln">Vulnerability Scan</option>
+                                    <option value="service">Service Scan</option>
+                                    <option value="os">OS Detection</option>
+                                </select>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button type="submit" class="btn btn-primary" id="scanButton">Start Scan</button>
+                                <div class="ms-3" id="scanStatus" style="display:none;">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <span class="ms-2 text-muted" id="scanStatusText">Scanning... This may take several minutes.</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Timeout info alert -->
+                <div class="alert alert-info mt-3" role="alert">
+                    <i class="bi bi-info-circle"></i> <strong>Scan Duration Information</strong>
+                    <ul class="mt-2 mb-0">
+                        <li><strong>Basic Scan:</strong> Usually completes in 1-2 minutes</li>
+                        <li><strong>Stealth Scan:</strong> Usually completes in 2-5 minutes</li>
+                        <li><strong>Service Scan:</strong> May take 5-10 minutes</li>
+                        <li><strong>OS Detection:</strong> May take 5-10 minutes</li>
+                        <li><strong>Vulnerability Scan:</strong> May take 10-30 minutes</li>
+                        <li><strong>Aggressive Scan:</strong> May take 30-60 minutes</li>
+                    </ul>
+                </div>
+
+                <div id="scanResult" class="card mt-4" style="display: none;">
+                    <div class="card-header">
+                        <h3>Scan Results</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="resultContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('scanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const resultDiv = document.getElementById('scanResult');
+            const resultContent = document.getElementById('resultContent');
+            const scanButton = document.getElementById('scanButton');
+            const scanStatus = document.getElementById('scanStatus');
+            const scanStatusText = document.getElementById('scanStatusText');
+            const scanType = form.querySelector('#scan_type').value;
+            
+            // Disable button and show status
+            scanButton.disabled = true;
+            scanStatus.style.display = 'flex';
+            
+            // Set timeout message based on scan type
+            const timeoutMessages = {
+                'basic': '1-2 minutes',
+                'stealth': '2-5 minutes',
+                'service': '5-10 minutes',
+                'os': '5-10 minutes',
+                'vuln': '10-30 minutes',
+                'aggressive': '30-60 minutes'
+            };
+            
+            scanStatusText.textContent = `Scanning... This may take ${timeoutMessages[scanType] || 'several minutes'}.`;
+            
+            try {
+                resultContent.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div><p>Scanning in progress...</p><p class="text-muted mt-2">This may take ' + (timeoutMessages[scanType] || 'several minutes') + '</p></div>';
+                resultDiv.style.display = 'block';
+                
+                // Set up timeout handling
+                const timeoutDuration = {
+                    'basic': 120000,       // 2 minutes
+                    'stealth': 300000,     // 5 minutes
+                    'service': 600000,     // 10 minutes
+                    'os': 600000,          // 10 minutes
+                    'vuln': 1800000,       // 30 minutes
+                    'aggressive': 3600000  // 60 minutes
+                }[scanType] || 900000;     // Default 15 minutes
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
+                
+                const response = await fetch('/scan', {
+                    method: 'POST',
+                    body: new FormData(form),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                // Reset scan button and status
+                scanButton.disabled = false;
+                scanStatus.style.display = 'none';
+                
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Server didn\'t return JSON. Got: ' + contentType);
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    resultContent.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                } else {
+                    // Format the scan summary data into a more readable format
+                    const summary = data.summary || {};
+                    const totalHosts = summary.total_hosts || 0;
+                    const upHosts = summary.up_hosts || 0;
+                    const totalPorts = summary.total_ports || 0;
+                    const openPorts = summary.open_ports || 0;
+
+                    // Create formatted HTML for services
+                    let servicesHtml = '';
+                    if (summary.services && Object.keys(summary.services).length > 0) {
+                        servicesHtml = `
+                            <div class="card mb-3">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Detected Services</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        ${Object.entries(summary.services).map(([service, count]) => `
+                                            <div class="col-md-4 mb-2">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>${service}</span>
+                                                    <span class="badge bg-info">${count}</span>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Create formatted HTML for OS distribution
+                    let osHtml = '';
+                    if (summary.os_distribution && Object.keys(summary.os_distribution).length > 0) {
+                        osHtml = `
+                            <div class="card mb-3">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Operating Systems</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group">
+                                        ${Object.entries(summary.os_distribution).map(([os, count]) => `
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                ${os}
+                                                <span class="badge bg-primary rounded-pill">${count}</span>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // Format vulnerabilities if present
+                    let vulnHtml = '';
+                    if (data.vulnerabilities && data.vulnerabilities.length > 0) {
+                        const severityBadgeClass = {
+                            'High': 'bg-danger',
+                            'Medium': 'bg-warning text-dark',
+                            'Low': 'bg-info'
+                        };
+                        
+                        vulnHtml = `
+                            <div class="card mb-3">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Vulnerabilities Found (${data.vulnerabilities.length})</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Severity</th>
+                                                    <th>Host</th>
+                                                    <th>Port</th>
+                                                    <th>Service</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${data.vulnerabilities.map(vuln => `
+                                                    <tr>
+                                                        <td>${vuln.name || vuln.vulnerability || 'Unknown'}</td>
+                                                        <td><span class="badge ${severityBadgeClass[vuln.severity] || 'bg-secondary'}">${vuln.severity || 'Unknown'}</span></td>
+                                                        <td>${vuln.host || 'N/A'}</td>
+                                                        <td>${vuln.port || 'N/A'}</td>
+                                                        <td>${vuln.service || 'N/A'}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        vulnHtml = '<div class="alert alert-info">No vulnerabilities detected.</div>';
+                    }
+                    
+                    // Success - show formatted scan results
+                    resultContent.innerHTML = `
+                        <div class="alert alert-success">Scan completed successfully!</div>
+                        <div class="d-grid gap-2 mb-3">
+                            <a href="${data.scan_details_url}" class="btn btn-primary">
+                                <i class="bi bi-search"></i> View Full Scan Details
+                            </a>
+                            <a href="${data.scan_details_url}/analyze" class="btn btn-info">
+                                <i class="bi bi-graph-up"></i> View AI Security Analysis
+                            </a>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="card text-white bg-primary mb-3 h-100">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Hosts</h5>
+                                        <h2 class="display-4">${upHosts}/${totalHosts}</h2>
+                                        <p class="card-text">Hosts online</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-white bg-success mb-3 h-100">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Ports</h5>
+                                        <h2 class="display-4">${openPorts}</h2>
+                                        <p class="card-text">Open ports</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-white bg-info mb-3 h-100">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Services</h5>
+                                        <h2 class="display-4">${summary.services ? Object.keys(summary.services).length : 0}</h2>
+                                        <p class="card-text">Unique services</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-white ${data.vulnerabilities?.length > 0 ? 'bg-danger' : 'bg-secondary'} mb-3 h-100">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Vulnerabilities</h5>
+                                        <h2 class="display-4">${data.vulnerabilities?.length || 0}</h2>
+                                        <p class="card-text">Issues found</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${servicesHtml}
+                        ${osHtml}
+                        ${vulnHtml}
+                    `;
+                }
+            } catch (error) {
+                // Reset scan button and status on error
+                scanButton.disabled = false;
+                scanStatus.style.display = 'none';
+                
+                if (error.name === 'AbortError') {
+                    resultContent.innerHTML = `<div class="alert alert-warning">
+                        <h4><i class="bi bi-exclamation-triangle"></i> Scan Timeout</h4>
+                        <p>The scan operation is taking longer than expected. This could be due to:</p>
+                        <ul>
+                            <li>Network latency or slow target response</li>
+                            <li>Target has many open ports requiring detailed scanning</li>
+                            <li>You've selected an intensive scan type (vulnerability or aggressive)</li>
+                        </ul>
+                        <p>You can:</p>
+                        <ol>
+                            <li>Wait and check scan history later</li>
+                            <li>Try a simpler scan type</li>
+                            <li>Scan a more specific IP range or single host</li>
+                        </ol>
+                    </div>`;
+                } else {
+                    resultContent.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+                }
+                console.error('Error during scan:', error);
+            }
+        });
+    </script>
+</body>
+</html>

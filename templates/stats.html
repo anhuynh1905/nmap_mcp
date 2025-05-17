@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics - Nmap Scanner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Nmap Scanner</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="/history">History</a>
+                <a class="nav-link active" href="/stats">Statistics</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Total Scans: <span id="totalScans">-</span></h2>
+                        <p class="text-muted">Last updated: <span id="lastUpdated">-</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Scan Types Distribution</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height:300px;">
+                            <canvas id="scanTypesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Most Scanned Targets</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height:300px;">
+                            <canvas id="targetsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Vulnerabilities Found</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height:300px;">
+                            <canvas id="vulnChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3>Scan Activity Over Time</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height:300px;">
+                            <canvas id="activityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Chart colors
+        const chartColors = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+            '#FF9F40', '#8AC24A', '#FF5252', '#7E57C2', '#26A69A'
+        ];
+
+        // Initialize charts
+        let scanTypesChart = null;
+        let targetsChart = null;
+        let vulnChart = null;
+        let activityChart = null;
+
+        // Fetch and display statistics
+        async function loadStats() {
+            try {
+                const response = await fetch('/stats/overview');
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Update total scans and last updated
+                document.getElementById('totalScans').textContent = data.total_scans;
+                document.getElementById('lastUpdated').textContent = new Date(data.last_updated).toLocaleString();
+
+                // Process scan types data
+                const scanTypesData = Object.entries(data.scans_by_type).map(([type, count]) => ({
+                    type: type.charAt(0).toUpperCase() + type.slice(1),
+                    count: count
+                }));
+
+                // Update or create scan types chart
+                if (scanTypesChart) {
+                    scanTypesChart.destroy();
+                }
+                scanTypesChart = new Chart(document.getElementById('scanTypesChart'), {
+                    type: 'pie',
+                    data: {
+                        labels: scanTypesData.map(item => item.type),
+                        datasets: [{
+                            data: scanTypesData.map(item => item.count),
+                            backgroundColor: chartColors.slice(0, scanTypesData.length)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = Math.round((value / total) * 100);
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Update or create targets chart
+                if (targetsChart) {
+                    targetsChart.destroy();
+                }
+                targetsChart = new Chart(document.getElementById('targetsChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: data.top_targets.map(item => item.target),
+                        datasets: [{
+                            label: 'Number of Scans',
+                            data: data.top_targets.map(item => item.count),
+                            backgroundColor: chartColors[1]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Update or create vulnerabilities chart
+                if (vulnChart) {
+                    vulnChart.destroy();
+                }
+                if (data.vulnerabilities && data.vulnerabilities.length > 0) {
+                    vulnChart = new Chart(document.getElementById('vulnChart'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.vulnerabilities.map(item => item.type),
+                            datasets: [{
+                                data: data.vulnerabilities.map(item => item.count),
+                                backgroundColor: chartColors.slice(0, data.vulnerabilities.length)
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right'
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    document.getElementById('vulnChart').parentElement.innerHTML = 
+                        '<div class="text-center text-muted">No vulnerability data available</div>';
+                }
+
+                // Update or create activity chart
+                if (activityChart) {
+                    activityChart.destroy();
+                }
+                if (data.activity && data.activity.length > 0) {
+                    activityChart = new Chart(document.getElementById('activityChart'), {
+                        type: 'line',
+                        data: {
+                            labels: data.activity.map(item => item.date),
+                            datasets: [{
+                                label: 'Scans per Day',
+                                data: data.activity.map(item => item.count),
+                                borderColor: chartColors[1],
+                                tension: 0.1,
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    document.getElementById('activityChart').parentElement.innerHTML = 
+                        '<div class="text-center text-muted">No activity data available</div>';
+                }
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+                // Show error message to user
+                const container = document.querySelector('.container');
+                const errorAlert = document.createElement('div');
+                errorAlert.className = 'alert alert-danger';
+                errorAlert.textContent = `Error loading statistics: ${error.message}`;
+                container.insertBefore(errorAlert, container.firstChild);
+            }
+        }
+
+        // Load stats on page load
+        loadStats();
+
+        // Refresh stats every minute
+        setInterval(loadStats, 60000);
+    </script>
+</body>
+</html> 

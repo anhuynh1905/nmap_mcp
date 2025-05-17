@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///C:/Program Files (x86)/Nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.97 scan initiated Fri May 16 23:01:36 2025 as: nmap -A -p- -sV -&#45;version-intensity 9 -O -&#45;script=all -T4 -v -&#45;reason -&#45;packet-trace -oX D:\\HK3-N2\\LAPTRINHMANG\\nmap_mcp\\nmap_outputs\\tantanluc.com_aggressive_WERqjNdN.xml tantanluc.com -->
+<nmaprun scanner="nmap" args="nmap -A -p- -sV -&#45;version-intensity 9 -O -&#45;script=all -T4 -v -&#45;reason -&#45;packet-trace -oX D:\\HK3-N2\\LAPTRINHMANG\\nmap_mcp\\nmap_outputs\\tantanluc.com_aggressive_WERqjNdN.xml tantanluc.com" start="1747411296" startstr="Fri May 16 23:01:36 2025" version="7.97" xmloutputversion="1.05">
+<scaninfo type="syn" protocol="tcp" numservices="65535" services="1-65535"/>
+<verbose level="1"/>
+<debugging level="0"/>
+<taskbegin task="NSE" time="1747411304"/>
+<taskend task="NSE" time="1747411344"/>
+<taskbegin task="NSE" time="1747411344"/>
+<taskend task="NSE" time="1747411344"/>
+<taskbegin task="NSE" time="1747411344"/>
+<taskend task="NSE" time="1747411344"/>
+<taskbegin task="NSE" time="1747411344"/>
+<taskend task="NSE" time="1747411344"/>
+<prescript><script id="targets-asn" output="&#xa;  targets-asn.asn is a mandatory parameter&#xa;"/><script id="multicast-profinet-discovery" output="0">0</script><script id="http-robtex-shared-ns" output="*TEMPORARILY DISABLED* due to changes in Robtex&apos;s API. See https://www.robtex.com/api/"/><script id="hostmap-robtex" output="*TEMPORARILY DISABLED* due to changes in Robtex&apos;s API. See https://www.robtex.com/api/"/><script id="broadcast-listener" output="&#xa;  ether&#xa;      EIGRP Update&#xa;        &#xa;      ARP Request&#xa;        sender ip    sender mac         target ip&#xa;        192.168.1.1  24:43:e2:bf:0d:b7  192.168.1.23&#xa;  udp&#xa;      DHCP&#xa;        srv ip       cli ip        mask           gw           dns                           vendor&#xa;        192.168.1.1  192.168.1.23  255.255.255.0  192.168.1.1  203.113.131.2, 203.113.188.8  -&#xa;"/><script id="targets-sniffer" output="Sniffed 29 address(es). &#xa;192.168.1.16&#xa;239.255.255.253&#xa;224.0.0.9&#xa;192.168.1.1&#xa;fe80::2342:2a7:d41c:d5fa&#xa;fe80::2643:e2ff:fedd:1c5f&#xa;fe80::2643:e2ff:febf:db7&#xa;0.0.0.0&#xa;fe80::aa41:f4ff:fe2a:eada&#xa;c0a8:110::&#xa;2402:800:637d:711a:35ef:ec77:3d4a:be51&#xa;2402:800:637d:711a:2643:e2ff:febf:db7&#xa;51.105.71.137&#xa;::&#xa;fe80::7ce8:c8ff:fe93:ed15&#xa;2402:800:637d:711a:9907:d55b:2930:dc87&#xa;224.0.0.13&#xa;224.0.0.1&#xa;1.0.0.1&#xa;fe80::f8be:e7ff:fe3a:b39e&#xa;2402:800:637d:711a:1189:2600:1095:2bbf&#xa;fe80::ec19:2aff:fe50:50e5&#xa;192.168.1.23&#xa;224.0.0.251&#xa;fe80::f407:b9ff:fefa:4a73&#xa;104.18.19.125&#xa;224.0.23.12&#xa;2402:800:637d:711a:607a:e142:1b63:9a05&#xa;2402:800:637d:711a:38dc:bb80:c457:a89a"/><script id="eap-info" output="&#xa;Available authentication methods with identity=&quot;anonymous&quot; on interface eth3&#xa;  unknown  EAP-TTLS&#xa;  unknown  EAP-TLS&#xa;  unknown  EAP-MSCHAP-V2&#xa;  unknown  PEAP&#xa;"/><script id="targets-ipv6-multicast-invalid-dst" output="&#xa;  IP: fe80::2643:e2ff:fedd:1c5f              MAC: 24:43:e2:dd:1c:5f  IFACE: eth3&#xa;  IP: fe80::215:5dff:fef6:cf10               MAC: 00:15:5d:f6:cf:10  IFACE: eth4&#xa;  IP: 2402:800:637d:711a:2643:e2ff:febf:db7  MAC: 24:43:e2:bf:0d:b7  IFACE: eth3&#xa;  IP: fe80::2643:e2ff:febf:db7               MAC: 24:43:e2:bf:0d:b7  IFACE: eth3&#xa;  Use -&#45;script-args=newtargets to add the results as targets&#xa;"/><script id="broadcast-dhcp-discover" output="&#xa;  Response 1 of 1: &#xa;    Interface: eth3&#xa;    IP Offered: 192.168.1.23&#xa;    DHCP Message Type: DHCPOFFER&#xa;    Server Identifier: 192.168.1.1&#xa;    IP Address Lease Time: 1h00m00s&#xa;    Subnet Mask: 255.255.255.0&#xa;    Router: 192.168.1.1&#xa;    Domain Name Server: 203.113.131.2, 203.113.188.8&#xa;    NetBIOS Name Server: 192.168.1.1"><table key="Response 1 of 1">
+<elem key="Interface">eth3</elem>
+<elem key="IP Offered">192.168.1.23</elem>
+<elem key="DHCP Message Type">DHCPOFFER</elem>
+<elem key="Server Identifier">192.168.1.1</elem>
+<elem key="IP Address Lease Time">1h00m00s</elem>
+<elem key="Subnet Mask">255.255.255.0</elem>
+<elem key="Router">192.168.1.1</elem>
+<table key="Domain Name Server">
+<elem>203.113.131.2</elem>
+<elem>203.113.188.8</elem>
+</table>
+<elem key="NetBIOS Name Server">192.168.1.1</elem>
+</table>
+</script><script id="targets-ipv6-multicast-mld" output="&#xa;  IP: fe80::215:5dff:fef6:cf10   MAC: 00:15:5d:f6:cf:10  IFACE: eth4&#xa;  IP: fe80::2643:e2ff:febf:db7   MAC: 24:43:e2:bf:0d:b7  IFACE: eth3&#xa;  IP: fe80::2643:e2ff:fedd:1c5f  MAC: 24:43:e2:dd:1c:5f  IFACE: eth3&#xa;  IP: fe80::7ce8:c8ff:fe93:ed15  MAC: 7e:e8:c8:93:ed:15  IFACE: eth3&#xa;  IP: fe80::ec19:2aff:fe50:50e5  MAC: ee:19:2a:50:50:e5  IFACE: eth3&#xa;  IP: fe80::f407:b9ff:fefa:4a73  MAC: f6:07:b9:fa:4a:73  IFACE: eth3&#xa;  IP: fe80::f8be:e7ff:fe3a:b39e  MAC: fa:be:e7:3a:b3:9e  IFACE: eth3&#xa;&#xa;  Use -&#45;script-args=newtargets to add the results as targets"><table>
+<elem key="iface">eth4</elem>
+<elem key="address">fe80::215:5dff:fef6:cf10</elem>
+<elem key="mac">00:15:5d:f6:cf:10</elem>
+</table>
+<table>
+<elem key="iface">eth3</elem>
+<elem key="address">fe80::2643:e2ff:febf:db7</elem>
+<elem key="mac">24:43:e2:bf:0d:b7</elem>
+</table>
+<table>
+<elem key="iface">eth3</elem>
+<elem key="address">fe80::2643:e2ff:fedd:1c5f</elem>
+<elem key="mac">24:43:e2:dd:1c:5f</elem>
+</table>
+<table>
+<elem key="iface">eth3</elem>
+<elem key="address">fe80::7ce8:c8ff:fe93:ed15</elem>
+<elem key="mac">7e:e8:c8:93:ed:15</elem>
+</table>
+<table>
+<elem key="iface">eth3</elem>
+<elem key="address">fe80::ec19:2aff:fe50:50e5</elem>
+<elem key="mac">ee:19:2a:50:50:e5</elem>
+</table>
+<table>
+<elem key="iface">eth3</elem>
+<elem key="address">fe80::f407:b9ff:fefa:4a73</elem>
+<elem key="mac">f6:07:b9:fa:4a:73</elem>
+</table>
+<table>
+<elem key="iface">eth3</elem>
+<elem key="address">fe80::f8be:e7ff:fe3a:b39e</elem>
+<elem key="mac">fa:be:e7:3a:b3:9e</elem>
+</table>
+</script><script id="ipv6-multicast-mld-list" output="&#xa;  fe80::f407:b9ff:fefa:4a73: &#xa;    device: eth3&#xa;    mac: f6:07:b9:fa:4a:73&#xa;    multicast_ips: &#xa;      ff02::1:fffa:4a73         (NDP Solicited-node)&#xa;      ff02::1:ff57:a89a         (Solicited-Node Address)&#xa;      ff02::fb                  (mDNSv6)&#xa;  fe80::2643:e2ff:fedd:1c5f: &#xa;    device: eth3&#xa;    mac: 24:43:e2:dd:1c:5f&#xa;    multicast_ips: &#xa;      ff02::1:ff00:0            (Solicited-Node Address)&#xa;      ff02::1:ffdd:1c5f         (NDP Solicited-node)&#xa;      ff02::2                   (All Routers Address)&#xa;  fe80::215:5dff:fef6:cf10: &#xa;    device: eth4&#xa;    mac: 00:15:5d:f6:cf:10&#xa;    multicast_ips: &#xa;      ff02::1:fff6:cf10         (NDP Solicited-node)&#xa;  fe80::2643:e2ff:febf:db7: &#xa;    device: eth3&#xa;    mac: 24:43:e2:bf:0d:b7&#xa;    multicast_ips: &#xa;      ff02::1:2                 (All-dhcp-agents)&#xa;      ff02::1:ffbf:db7          (NDP Solicited-node)&#xa;      ff02::1:ff00:0            (Solicited-Node Address)&#xa;      ff02::2                   (All Routers Address)&#xa;  fe80::ec19:2aff:fe50:50e5: &#xa;    device: eth3&#xa;    mac: ee:19:2a:50:50:e5&#xa;    multicast_ips: &#xa;      ff02::1:ff50:50e5         (NDP Solicited-node)&#xa;      ff02::1:ff63:9a05         (Solicited-Node Address)&#xa;      ff02::1:ff50:50e5         (NDP Solicited-node)&#xa;  fe80::7ce8:c8ff:fe93:ed15: &#xa;    device: eth3&#xa;    mac: 7e:e8:c8:93:ed:15&#xa;    multicast_ips: &#xa;      ff02::1:ff93:ed15         (NDP Solicited-node)&#xa;      ff02::1:ff30:dc87         (Solicited-Node Address)&#xa;  fe80::f8be:e7ff:fe3a:b39e: &#xa;    device: eth3&#xa;    mac: fa:be:e7:3a:b3:9e&#xa;    multicast_ips: &#xa;      ff02::1:ff3a:b39e         (NDP Solicited-node)&#xa;      ff02::1:ff95:2bbf         (Solicited-Node Address)&#xa;      ff02::fb                  (mDNSv6)"><table key="fe80::f407:b9ff:fefa:4a73">
+<elem key="device">eth3</elem>
+<elem key="mac">f6:07:b9:fa:4a:73</elem>
+<table key="multicast_ips">
+<table>
+<elem key="ip">ff02::1:fffa:4a73</elem>
+<elem key="description">NDP Solicited-node</elem>
+</table>
+<table>
+<elem key="ip">ff02::1:ff57:a89a</elem>
+<elem key="description">Solicited-Node Address</elem>
+</table>
+<table>
+<elem key="ip">ff02::fb</elem>
+<elem key="description">mDNSv6</elem>
+</table>
+</table>
+</table>
+<table key="fe80::2643:e2ff:fedd:1c5f">
+<elem key="device">eth3</elem>
+<elem key="mac">24:43:e2:dd:1c:5f</elem>
+<table key="multicast_ips">
+<table>
+<elem key="ip">ff02::1:ff00:0</elem>
+<elem key="description">Solicited-Node Address</elem>
+</table>
+<table>
+<elem key="ip">ff02::1:ffdd:1c5f</elem>
+<elem key="description">NDP Solicited-node</elem>
+</table>
+<table>
+<elem key="ip">ff02::2</elem>
+<elem key="description">All Routers Address</elem>
+</table>
+</table>
+</table>
+<table key="fe80::215:5dff:fef6:cf10">
+<elem key="device">eth4</elem>
+<elem key="mac">00:15:5d:f6:cf:10</elem>
+<table key="multicast_ips">
+<table>
+<elem key="ip">ff02::1:fff6:cf10</elem>
+<elem key="description">NDP Solicited-node</elem>
+</table>
+</table>
+</table>
+<table key="fe80::2643:e2ff:febf:db7">
+<elem key="device">eth3</elem>
+<elem key="mac">24:43:e2:bf:0d:b7</elem>
+<table key="multicast_ips">
+<table>
+<elem key="ip">ff02::1:2</elem>
+<elem key="description">All-dhcp-agents</elem>
+</table>
+<table>
+<elem key="ip">ff02::1:ffbf:db7</elem>
+<elem key="description">NDP Solicited-node</elem>
+</table>
+<table>
+<elem key="ip">ff02::1:ff00:0</elem>
+<elem key="description">Solicited-Node Address</elem>
+</table>
+<table>
+<elem key="ip">ff02::2</elem>
+<elem key="description">All Routers Address</elem>
+</table>
+</table>
+</table>
+<table key="fe80::ec19:2aff:fe50:50e5">
+<elem key="device">eth3</elem>
+<elem key="mac">ee:19:2a:50:50:e5</elem>
+<table key="multicast_ips">
+<table>
+<elem key="ip">ff02::1:ff50:50e5</elem>
+<elem key="description">NDP Solicited-node</elem>
+</table>
+<table>
+<elem key="ip">ff02::1:ff63:9a05</elem>
+<elem key="description">Solicited-Node Address</elem>
+</table>
+<table>
+<elem key="ip">ff02::1:ff50:50e5</elem>
+<elem key="description">NDP Solicited-node</elem>
+</table>
+</table>
+</table>
+<table key="fe80::7ce8:c8ff:fe93:ed15">
+<elem key="device">eth3</elem>
+<elem key="mac">7e:e8:c8:93:ed:15</elem>
+<table key="multicast_ips">
+<table>
+<elem key="ip">ff02::1:ff93:ed15</elem>
+<elem key="description">NDP Solicited-node</elem>
+</table>
+<table>
+<elem key="ip">ff02::1:ff30:dc87</elem>
+<elem key="description">Solicited-Node Address</elem>
+</table>
+</table>
+</table>
+<table key="fe80::f8be:e7ff:fe3a:b39e">
+<elem key="device">eth3</elem>
+<elem key="mac">fa:be:e7:3a:b3:9e</elem>
+<table key="multicast_ips">
+<table>
+<elem key="ip">ff02::1:ff3a:b39e</elem>
+<elem key="description">NDP Solicited-node</elem>
+</table>
+<table>
+<elem key="ip">ff02::1:ff95:2bbf</elem>
+<elem key="description">Solicited-Node Address</elem>
+</table>
+<table>
+<elem key="ip">ff02::fb</elem>
+<elem key="description">mDNSv6</elem>
+</table>
+</table>
+</table>
+</script><script id="targets-ipv6-multicast-slaac" output="&#xa;  IP: fe80::7ce8:c8ff:fe93:ed15  MAC: 7e:e8:c8:93:ed:15  IFACE: eth3&#xa;  IP: fe80::9907:d55b:2930:dc87  MAC: 7e:e8:c8:93:ed:15  IFACE: eth3&#xa;  IP: fe80::f8be:e7ff:fe3a:b39e  MAC: fa:be:e7:3a:b3:9e  IFACE: eth3&#xa;  IP: fe80::1189:2600:1095:2bbf  MAC: fa:be:e7:3a:b3:9e  IFACE: eth3&#xa;  IP: fe80::f407:b9ff:fefa:4a73  MAC: f6:07:b9:fa:4a:73  IFACE: eth3&#xa;  IP: fe80::215:5dff:fef6:cf10   MAC: 00:15:5d:f6:cf:10  IFACE: eth4&#xa;  IP: fe80::38dc:bb80:c457:a89a  MAC: f6:07:b9:fa:4a:73  IFACE: eth3&#xa;  Use -&#45;script-args=newtargets to add the results as targets&#xa;"/><script id="lltd-discovery" output=""></script><script id="broadcast-igmp-discovery" output="&#xa;  192.168.1.23&#xa;    Interface: eth3&#xa;    Version: 2&#xa;    Group: 224.0.0.251&#xa;    Description: mDNS (rfc6762)&#xa;  192.168.1.16&#xa;    Interface: eth3&#xa;    Version: 2&#xa;    Group: 239.255.255.250&#xa;    Description: Organization-Local Scope (rfc2365)&#xa;  Use the newtargets script-arg to add the results as targets&#xa;"/><script id="targets-ipv6-multicast-echo" output="&#xa;  IP: fe80::215:5dff:fef6:cf10                MAC: 00:15:5d:f6:cf:10  IFACE: eth4&#xa;  IP: fe80::2643:e2ff:fedd:1c5f               MAC: 24:43:e2:dd:1c:5f  IFACE: eth3&#xa;  IP: fe80::2643:e2ff:febf:db7                MAC: 24:43:e2:bf:0d:b7  IFACE: eth3&#xa;  IP: 2402:800:637d:711a:2643:e2ff:febf:db7   MAC: 24:43:e2:bf:0d:b7  IFACE: eth3&#xa;  IP: fe80::7ce8:c8ff:fe93:ed15               MAC: 7e:e8:c8:93:ed:15  IFACE: eth3&#xa;  IP: 2402:800:637d:711a:9907:d55b:2930:dc87  MAC: 7e:e8:c8:93:ed:15  IFACE: eth3&#xa;  IP: fe80::f8be:e7ff:fe3a:b39e               MAC: fa:be:e7:3a:b3:9e  IFACE: eth3&#xa;  IP: 2402:800:637d:711a:1189:2600:1095:2bbf  MAC: fa:be:e7:3a:b3:9e  IFACE: eth3&#xa;  IP: fe80::ec19:2aff:fe50:50e5               MAC: ee:19:2a:50:50:e5  IFACE: eth3&#xa;  IP: 2402:800:637d:711a:607a:e142:1b63:9a05  MAC: ee:19:2a:50:50:e5  IFACE: eth3&#xa;  IP: 2402:800:637d:711a:38dc:bb80:c457:a89a  MAC: f6:07:b9:fa:4a:73  IFACE: eth3&#xa;  IP: fe80::f407:b9ff:fefa:4a73               MAC: f6:07:b9:fa:4a:73  IFACE: eth3&#xa;  Use -&#45;script-args=newtargets to add the results as targets&#xa;"/><script id="broadcast-upnp-info" output=""></script></prescript><taskbegin task="Parallel DNS resolution of 1 host." time="1747411344"/>
+<taskend task="Parallel DNS resolution of 1 host." time="1747411345"/>
+<taskbegin task="Ping Scan" time="1747411345"/>
+<hosthint><status state="up" reason="unknown-response" reason_ttl="0"/>
+<address addr="112.213.84.126" addrtype="ipv4"/>
+<hostnames>
+<hostname name="tantanluc.com" type="user"/>
+</hostnames>
+</hosthint>
+<taskend task="Ping Scan" time="1747411345" extrainfo="1 total hosts"/>
+<taskbegin task="Parallel DNS resolution of 1 host." time="1747411345"/>
+<taskend task="Parallel DNS resolution of 1 host." time="1747411345"/>
+<taskbegin task="SYN Stealth Scan" time="1747411345"/>
+<taskprogress task="SYN Stealth Scan" time="1747411376" percent="21.02" remaining="117" etc="1747411492"/>
+<taskprogress task="SYN Stealth Scan" time="1747411406" percent="53.39" remaining="54" etc="1747411459"/>
+<taskend task="SYN Stealth Scan" time="1747411453" extrainfo="65535 total ports"/>
+<taskbegin task="Service scan" time="1747411453"/>
+<taskend task="Service scan" time="1747411466" extrainfo="13 services on 1 host"/>
+<taskbegin task="Traceroute" time="1747411470"/>
+<taskend task="Traceroute" time="1747411470"/>
+<taskbegin task="Parallel DNS resolution of 6 hosts." time="1747411470"/>
+<taskend task="Parallel DNS resolution of 6 hosts." time="1747411471"/>
+<taskbegin task="NSE" time="1747411471"/>
+<taskprogress task="NSE" time="1747411508" percent="45.44" remaining="45" etc="1747411552"/>
+<taskprogress task="NSE" time="1747411553" percent="57.39" remaining="61" etc="1747411614"/>
+<taskprogress task="NSE" time="1747411583" percent="57.39" remaining="84" etc="1747411666"/>
+<taskprogress task="NSE" time="1747411613" percent="57.46" remaining="106" etc="1747411718"/>
+<taskprogress task="NSE" time="1747411643" percent="57.53" remaining="127" etc="1747411770"/>
+<taskprogress task="NSE" time="1747411673" percent="57.53" remaining="150" etc="1747411822"/>
+<taskprogress task="NSE" time="1747411703" percent="57.53" remaining="172" etc="1747411874"/>
+<taskprogress task="NSE" time="1747411733" percent="57.65" remaining="193" etc="1747411926"/>
+<taskprogress task="NSE" time="1747411766" percent="57.67" remaining="217" etc="1747411983"/>
+<taskprogress task="NSE" time="1747411802" percent="57.70" remaining="243" etc="1747412045"/>
+<taskprogress task="NSE" time="1747411844" percent="57.83" remaining="272" etc="1747412116"/>
+<taskprogress task="NSE" time="1747411889" percent="57.83" remaining="305" etc="1747412194"/>
+<taskprogress task="NSE" time="1747411943" percent="57.97" remaining="343" etc="1747412285"/>
+<taskprogress task="NSE" time="1747412000" percent="57.97" remaining="384" etc="1747412384"/>
+<taskprogress task="NSE" time="1747412069" percent="58.13" remaining="431" etc="1747412500"/>
+<taskprogress task="NSE" time="1747412147" percent="58.27" remaining="485" etc="1747412631"/>
+<taskprogress task="NSE" time="1747412231" percent="58.34" remaining="543" etc="1747412774"/>
+<taskprogress task="NSE" time="1747412327" percent="58.44" remaining="609" etc="1747412936"/>
+<taskprogress task="NSE" time="1747412438" percent="58.63" remaining="683" etc="1747413120"/>
+<taskprogress task="NSE" time="1747412567" percent="58.88" remaining="766" etc="1747413332"/>

@@ -1,0 +1,726 @@
+<!-- filepath: d:\HK3-N2\LAPTRINHMANG\nmap_mcp\templates\scan_details_new.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Details - Nmap Scanner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(0,0,0,.05);
+            padding: 1.25rem 1.5rem;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+        .stat-card {
+            border-radius: 10px;
+            padding: 1.5rem;
+            height: 100%;
+            transition: transform .3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .stat-card .stat-title {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .btn-custom {
+            border-radius: 50px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+        }
+        .nav-link-custom {
+            color: #6c757d;
+            padding: 0.75rem 1rem;
+            position: relative;
+            transition: color 0.2s;
+            border-radius: 0.5rem;
+        }
+        .nav-link-custom:hover, .nav-link-custom.active {
+            color: #007bff;
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+        .nav-link-custom.active::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30%;
+            height: 3px;
+            background-color: #007bff;
+            border-radius: 3px;
+        }
+        .nav-link-custom i {
+            margin-right: 0.5rem;
+        }
+        .badge-severity-high {
+            background-color: #dc3545;
+            color: white;
+        }
+        .badge-severity-medium {
+            background-color: #fd7e14;
+            color: white;
+        }
+        .badge-severity-low {
+            background-color: #0dcaf0;
+            color: #212529;
+        }
+        .vulnerability-card {
+            border-left: 5px solid transparent;
+            transition: all 0.2s;
+        }
+        .vulnerability-card:hover {
+            transform: translateX(5px);
+        }
+        .vulnerability-high {
+            border-left-color: #dc3545;
+        }
+        .vulnerability-medium {
+            border-left-color: #fd7e14;
+        }
+        .vulnerability-low {
+            border-left-color: #0dcaf0;
+        }
+        .port-badge {
+            font-family: 'Courier New', monospace;
+            background-color: #212529;
+            color: #fff;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .service-badge {
+            background-color: #6610f2;
+            color: #fff;
+        }
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+        .dashboard-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .dashboard-subtitle {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+        .table-custom th {
+            border-top: none;
+            border-bottom-width: 1px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+        .detail-section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .detail-item {
+            margin-bottom: 0.75rem;
+        }
+        .detail-label {
+            font-weight: 600;
+        }
+        .detail-value {
+            color: #495057;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .scan-timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        .scan-timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        .scan-timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -30px;
+            top: 0;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #007bff;
+            z-index: 1;
+        }
+        .scan-timeline-item::after {
+            content: "";
+            position: absolute;
+            left: -23px;
+            top: 15px;
+            width: 2px;
+            height: calc(100% + 15px);
+            background-color: #dee2e6;
+            z-index: 0;
+        }
+        .scan-timeline-item:last-child::after {
+            display: none;
+        }
+        .scan-timeline-card {
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background-color: #fff;
+        }
+        .scan-timeline-time {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+        .scan-timeline-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-shield-check"></i> Nmap Scanner
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="bi bi-house"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/history"><i class="bi bi-clock-history"></i> History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/stats"><i class="bi bi-bar-chart"></i> Statistics</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="dashboard-header d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="dashboard-title">Scan Results: {{ target }}</h1>
+                <p class="dashboard-subtitle">
+                    <span class="badge bg-primary"><i class="bi bi-lightning"></i> {{ scan_type|capitalize }} Scan</span>
+                    {% if summary.scan_time %}
+                        <span class="text-muted ms-2"><i class="bi bi-calendar3"></i> {{ summary.scan_time }}</span>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="d-flex">
+                <a href="{{ url_for('history') }}" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+                <a href="{{ url_for('analyze_scan', target=target, scan_type=scan_type) }}" class="btn btn-primary">
+                    <i class="bi bi-robot"></i> Get AI Analysis
+                </a>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stat-card text-white bg-primary">
+                    <div class="icon"><i class="bi bi-pc-display"></i></div>
+                    <div class="stat-value">{{ summary.total_hosts|default('0') }}</div>
+                    <div class="stat-title">Hosts Scanned</div>
+                    <div class="stat-subtitle">{{ summary.up_hosts|default('0') }} up</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-white bg-success">
+                    <div class="icon"><i class="bi bi-ethernet"></i></div>
+                    <div class="stat-value">{{ summary.open_ports|default('0') }}</div>
+                    <div class="stat-title">Open Ports</div>
+                    <div class="stat-subtitle">Out of {{ summary.total_ports|default('0') }} total</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-white bg-info">
+                    <div class="icon"><i class="bi bi-gear"></i></div>
+                    <div class="stat-value">{{ (summary.services|default({}))|length }}</div>
+                    <div class="stat-title">Services</div>
+                    <div class="stat-subtitle">Running on target</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-white {% if vulnerabilities|length > 0 %}bg-danger{% else %}bg-secondary{% endif %}">
+                    <div class="icon"><i class="bi bi-exclamation-triangle"></i></div>
+                    <div class="stat-value">{{ vulnerabilities|length }}</div>
+                    <div class="stat-title">Vulnerabilities</div>
+                    <div class="stat-subtitle">Detected issues</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Results Tabs -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs" id="resultTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="hosts-tab" data-bs-toggle="tab" data-bs-target="#hosts" type="button" role="tab">
+                            <i class="bi bi-pc-display"></i> Hosts & Services
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="vulns-tab" data-bs-toggle="tab" data-bs-target="#vulns" type="button" role="tab">
+                            <i class="bi bi-shield-exclamation"></i> Vulnerabilities
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button" role="tab">
+                            <i class="bi bi-file-text"></i> Summary
+                        </button>
+                    </li>
+                    {% if llm_summary %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="ai-tab" data-bs-toggle="tab" data-bs-target="#ai" type="button" role="tab">
+                            <i class="bi bi-robot"></i> AI Insights
+                        </button>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="resultTabsContent">
+                    <!-- Hosts Tab -->
+                    <div class="tab-pane fade show active" id="hosts" role="tabpanel">
+                        {% if raw_data %}
+                            {% for host in raw_data %}
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h4 class="mb-0">
+                                                <i class="bi bi-pc-display"></i> Host: {{ host.ip }}
+                                                <span class="badge {% if host.status == 'up' %}bg-success{% else %}bg-secondary{% endif %} ms-2">{{ host.status }}</span>
+                                            </h4>
+                                            {% if host.hostname %}
+                                                <small class="text-muted">{{ host.hostname }}</small>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            {% if host.os_info and host.os_info.name %}
+                                                <span class="badge bg-dark">OS: {{ host.os_info.name }} ({{ host.os_info.accuracy }}% confidence)</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Open Ports and Services -->
+                                        {% if host.ports %}
+                                            <h5 class="mb-3">Open Ports and Services</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-custom">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>PORT</th>
+                                                            <th>STATE</th>
+                                                            <th>SERVICE</th>
+                                                            <th>VERSION</th>
+                                                            <th>DETAILS</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for port in host.ports %}
+                                                            <tr>
+                                                                <td><span class="port-badge">{{ port.port }}/{{ port.protocol }}</span></td>
+                                                                <td>
+                                                                    <span class="badge {% if port.state == 'open' %}bg-success{% elif port.state == 'filtered' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                                                        {{ port.state }}
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    <span class="badge service-badge">{{ port.service }}</span>
+                                                                </td>
+                                                                <td>{{ port.version or 'Unknown' }}</td>
+                                                                <td>
+                                                                    {% if port.product %}{{ port.product }}{% endif %}
+                                                                    <button class="btn btn-sm btn-outline-primary float-end" 
+                                                                        type="button" 
+                                                                        data-bs-toggle="collapse" 
+                                                                        data-bs-target="#port_{{ host.ip|replace('.', '_') }}_{{ port.port }}">
+                                                                        Details
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            {% if port.scripts and port.scripts|length > 0 %}
+                                                            <tr>
+                                                                <td colspan="5" class="p-0">
+                                                                    <div class="collapse p-3 bg-light" id="port_{{ host.ip|replace('.', '_') }}_{{ port.port }}">
+                                                                        <h6>Scripts Executed</h6>
+                                                                        <div class="accordion">
+                                                                            {% for script in port.scripts %}
+                                                                            <div class="accordion-item">
+                                                                                <h2 class="accordion-header">
+                                                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#script_{{ loop.index }}">
+                                                                                        {{ script.id }}
+                                                                                    </button>
+                                                                                </h2>
+                                                                                <div id="script_{{ loop.index }}" class="accordion-collapse collapse">
+                                                                                    <div class="accordion-body code-block">{{ script.output }}</div>
+                                                                                </div>
+                                                                            </div>
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <div class="alert alert-info">No open ports found</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="alert alert-info">No host data available</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Vulnerabilities Tab -->
+                    <div class="tab-pane fade" id="vulns" role="tabpanel">
+                        {% if vulnerabilities and vulnerabilities|length > 0 %}
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="mb-0">Found {{ vulnerabilities|length }} Vulnerabilities</h4>
+                                <div>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-outline-secondary active vuln-filter" data-filter="all">All</button>
+                                        <button type="button" class="btn btn-outline-danger vuln-filter" data-filter="High">High</button>
+                                        <button type="button" class="btn btn-outline-warning vuln-filter" data-filter="Medium">Medium</button>
+                                        <button type="button" class="btn btn-outline-info vuln-filter" data-filter="Low">Low</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                {% for vuln in vulnerabilities %}
+                                    <div class="col-12 mb-3 vuln-item" data-severity="{{ vuln.severity }}">
+                                        <div class="card vulnerability-card vulnerability-{{ vuln.severity|lower }}">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0">{{ vuln.name }}</h5>
+                                                <span class="badge badge-severity-{{ vuln.severity|lower }}">{{ vuln.severity }}</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="detail-item">
+                                                            <span class="detail-label">Host:</span>
+                                                            <span class="detail-value">{{ vuln.host }}</span>
+                                                        </div>
+                                                        <div class="detail-item">
+                                                            <span class="detail-label">Port/Protocol:</span>
+                                                            <span class="detail-value">{{ vuln.port }}</span>
+                                                        </div>
+                                                        <div class="detail-item">
+                                                            <span class="detail-label">Service:</span>
+                                                            <span class="detail-value">{{ vuln.service }}</span>
+                                                        </div>
+                                                        {% if vuln.cve %}
+                                                            <div class="detail-item">
+                                                                <span class="detail-label">CVE:</span>
+                                                                <span class="detail-value">
+                                                                    <a href="https://nvd.nist.gov/vuln/detail/{{ vuln.cve }}" target="_blank" class="badge bg-danger text-decoration-none">
+                                                                        {{ vuln.cve }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                    </a>
+                                                                </span>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        {% if vuln.description %}
+                                                            <h6><i class="bi bi-info-circle"></i> Description</h6>
+                                                            <p>{{ vuln.description|truncate(250) }}</p>
+                                                            <button class="btn btn-sm btn-outline-secondary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#description_{{ loop.index }}">
+                                                                Read More
+                                                            </button>
+                                                            <div class="collapse" id="description_{{ loop.index }}">
+                                                                <div class="code-block mb-3">{{ vuln.description }}</div>
+                                                            </div>
+                                                        {% endif %}
+                                                        
+                                                        {% if vuln.solution %}
+                                                            <h6><i class="bi bi-tools"></i> Solution</h6>
+                                                            <p>{{ vuln.solution }}</p>
+                                                        {% endif %}
+                                                        
+                                                        {% if vuln.references %}
+                                                            <h6><i class="bi bi-link-45deg"></i> References</h6>
+                                                            <ul class="ps-3">
+                                                                {% for ref in vuln.references %}
+                                                                    <li><small>{{ ref }}</small></li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle-fill"></i> No vulnerabilities were detected in this scan.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Summary Tab -->
+                    <div class="tab-pane fade" id="summary" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Scan Information</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Target:</span>
+                                            <span class="detail-value">{{ target }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Scan Type:</span>
+                                            <span class="detail-value">{{ scan_type|capitalize }}</span>
+                                        </div>
+                                        {% if summary.scan_time %}
+                                            <div class="detail-item">
+                                                <span class="detail-label">Scan Time:</span>
+                                                <span class="detail-value">{{ summary.scan_time }}</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- OS Distribution -->
+                                {% if summary.os_distribution and summary.os_distribution|length > 0 %}
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="bi bi-hdd"></i> Operating Systems</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-group">
+                                                {% for os_name, count in summary.os_distribution.items() %}
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        {{ os_name }}
+                                                        <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <!-- Services Distribution -->
+                                {% if summary.services and summary.services|length > 0 %}
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="bi bi-gear"></i> Services Overview</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                {% for service, count in summary.services.items() %}
+                                                    <div class="col-md-6 col-lg-4 mb-3">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span class="badge service-badge">{{ service }}</span>
+                                                            <span class="badge bg-secondary">{{ count }}</span>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Security Summary -->
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="bi bi-shield"></i> Security Summary</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="alert {% if vulnerabilities|length > 5 %}alert-danger{% elif vulnerabilities|length > 0 %}alert-warning{% else %}alert-success{% endif %}">
+                                            <h6 class="alert-heading">
+                                                {% if vulnerabilities|length > 5 %}
+                                                    <i class="bi bi-exclamation-triangle"></i> High Risk
+                                                {% elif vulnerabilities|length > 0 %}
+                                                    <i class="bi bi-exclamation-circle"></i> Medium Risk
+                                                {% else %}
+                                                    <i class="bi bi-check-circle"></i> Low Risk
+                                                {% endif %}
+                                            </h6>
+                                            {% if vulnerabilities|length > 5 %}
+                                                <p>This target has multiple significant vulnerabilities that should be addressed immediately.</p>
+                                            {% elif vulnerabilities|length > 0 %}
+                                                <p>Some security issues were detected. Review the vulnerabilities tab for details.</p>
+                                            {% else %}
+                                                <p>No significant vulnerabilities were detected in this scan.</p>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="vulnerability-stats mb-3">
+                                            {% set high = namespace(count=0) %}
+                                            {% set medium = namespace(count=0) %}
+                                            {% set low = namespace(count=0) %}
+                                            
+                                            {% for vuln in vulnerabilities %}
+                                                {% if vuln.severity == 'High' %}
+                                                    {% set high.count = high.count + 1 %}
+                                                {% elif vuln.severity == 'Medium' %}
+                                                    {% set medium.count = medium.count + 1 %}
+                                                {% else %}
+                                                    {% set low.count = low.count + 1 %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            
+                                            <div class="row text-center">
+                                                <div class="col-4">
+                                                    <div class="p-3 bg-danger bg-opacity-10 rounded">
+                                                        <h3 class="text-danger">{{ high.count }}</h3>
+                                                        <div>High</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="p-3 bg-warning bg-opacity-10 rounded">
+                                                        <h3 class="text-warning">{{ medium.count }}</h3>
+                                                        <div>Medium</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="p-3 bg-info bg-opacity-10 rounded">
+                                                        <h3 class="text-info">{{ low.count }}</h3>
+                                                        <div>Low</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Insights Tab -->
+                    {% if llm_summary %}
+                    <div class="tab-pane fade" id="ai" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="bi bi-robot"></i> AI-Generated Security Summary</h5>
+                                    <a href="{{ url_for('analyze_scan', target=target, scan_type=scan_type) }}" class="btn btn-sm btn-primary">
+                                        View Detailed Analysis
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="markdown-content">
+                                    {{ llm_summary | safe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Vulnerability filtering
+            const vulnFilters = document.querySelectorAll('.vuln-filter');
+            const vulnItems = document.querySelectorAll('.vuln-item');
+            
+            vulnFilters.forEach(filter => {
+                filter.addEventListener('click', function() {
+                    // Update active state
+                    vulnFilters.forEach(f => f.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filterValue = this.getAttribute('data-filter');
+                    
+                    vulnItems.forEach(item => {
+                        if (filterValue === 'all' || item.getAttribute('data-severity') === filterValue) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Setup polling for analysis status
+            const aiTab = document.getElementById('ai');
+            if (aiTab) {
+                const analysisButton = aiTab.querySelector('.btn-primary');
+                if (analysisButton) {
+                    analysisButton.addEventListener('click', function(e) {
+                        // Show loading state when user clicks for analysis
+                        const originalText = analysisButton.textContent;
+                        analysisButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Analyzing...';
+                        analysisButton.disabled = true;
+                        
+                        // Set a timeout to re-enable the button if it takes too long
+                        setTimeout(() => {
+                            if (analysisButton.disabled) {
+                                analysisButton.innerHTML = originalText;
+                                analysisButton.disabled = false;
+                            }
+                        }, 60000); // 60 seconds timeout
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
