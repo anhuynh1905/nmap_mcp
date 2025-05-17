@@ -8,3 +8,4 @@ features in this program:
 - You can use LLM to further analyze like I talk above.
 - In short, I spend to much time design the UI, that why html is 50% of the project.
 - Remember to add username and password for your mysql server also API key for your LLMs.
+- start up the mcp server first and then app.py or other way around 
